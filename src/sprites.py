@@ -127,11 +127,7 @@ class GLSprite3d() :
                 nz = self.box.pos[2]                
             elif self.body.pos[2] < self.box.pos[2] :
                 nz = self.box.pos[2]+self.box.l       
-            if self.isSphere :
-                r2 = self.body.r/2
-                self.body.moveTo( nx+r2, ny+r2, nz+r2 )
-            else :
-                self.body.moveTo( nx, ny, nz )
+            self.body.moveTo( nx, ny, nz )
 
     def isInBox( self ) :
         return self.body.collideParallelepiped( self.box )

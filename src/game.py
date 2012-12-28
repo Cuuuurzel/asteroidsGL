@@ -12,14 +12,14 @@ class Game() :
 
     def __init__( self ) :
         self.asteroids = []
-        a = Asteroid( 4 )
-        self.asteroids.append( a )
         self.ship = Ship( (0,0,0) )
+        self.points = 0
 
     def _generateAsteroids( self ) :
-        newAsteroids = []
-        for c in newAsteroids : 
-            self.asteroids.append( c ) 
+        n = self.points * DIFFICULTY - len( self.asteroids ) + 1
+        self.currentAsteroidSize = 4 + self.points * ASTEROIDS_GROWN_RATIO
+        for i in range( 0, int(n) ) :
+            self.asteroids.append( Asteroid( self.currentAsteroidSize ) )
 
     def update( self ) :
         self._generateAsteroids()
@@ -40,6 +40,7 @@ class Game() :
         for a in self.asteroids :
             if a.isDead :
                 self.asteroids.remove( a )
+                self.points += 1
                 for na in a.split() :
                     self.asteroids.append( na )
         for b in self.ship.usedBullets :
