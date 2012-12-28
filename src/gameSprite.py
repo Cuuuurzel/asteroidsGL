@@ -1,3 +1,4 @@
+import math
 import random
 
 from src.exceptions import *
@@ -11,7 +12,7 @@ class Ship( GLSprite3d ) :
         body = Sphere( pos, SHIP_SIZE )
         body.quality = [ int( body.r * SPHERE_FINEST_COEFF * 3 ), 
                          int( body.r * SPHERE_FINEST_COEFF * 3 ) ]
-        GLSprite3d.__init__( self, body, (0,0,0), SCREEN )
+        GLSprite3d.__init__( self, body, (0,0,GAME_Z), SCREEN )
         self.color = SHIP_COLOR
         self.usedBullets = []
         self.gaze = Vector2d( 1, 0 )
@@ -28,6 +29,12 @@ class Ship( GLSprite3d ) :
         GLSprite3d.blit( self )
         for b in self.usedBullets :
             b.blit()
+        glPushMatrix()
+        glTranslate( self.body.pos[0], self.body.pos[1], self.body.pos[2] )
+        glRotate( 180*self.gaze.currentAngle/math.pi, 0, 0, 1 )
+        glTranslate( CANNON_DIST, 0, 0 )
+        glutSolidSphere( CANNON_SIZE, CANNON_QUALITY, CANNON_QUALITY )
+        glPopMatrix()
 
     def update( self ) :
         GLSprite3d.update( self )

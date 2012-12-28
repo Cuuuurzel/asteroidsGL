@@ -1,3 +1,4 @@
+import math
 import random
 
 from src.exceptions import *
@@ -19,13 +20,21 @@ class Ship( GLSprite3d ) :
         self.shootCount = 0
 
     def shoot( self ) :
-        newShoot = Bullet( self.body.pos, self.gaze )
-        self.usedBullets.append( newShoot )
+        if self.shootCount > 0 :
+            self.shootCount -= 1
+            newShoot = Bullet( self.body.pos, self.gaze )
+            self.usedBullets.append( newShoot )
 
     def blit( self ) :
         GLSprite3d.blit( self )
         for b in self.usedBullets :
             b.blit()
+        glPushMatrix()
+        glTranslate( self.body.pos[0], self.body.pos[1], self.body.pos[2] )
+        glRotate( 180*self.gaze.currentAngle/math.pi, 0, 0, 1 )
+        glTranslate( CANNON_DIST, 0, 0 )
+        glutSolidSphere( CANNON_SIZE, CANNON_QUALITY, CANNON_QUALITY )
+        glPopMatrix()
 
     def update( self ) :
         GLSprite3d.update( self )

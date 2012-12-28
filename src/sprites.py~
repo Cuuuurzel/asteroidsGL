@@ -102,13 +102,13 @@ class GLSprite3d() :
     
     def collide( self, sprite ) :
         if sprite.isSphere and self.isSphere :            
-            return self.sphere.collideSphere( sprite.sphere )
+            return self.body.collideSphere( sprite.body )
         elif sprite.isSphere and not self.isSphere :
-            return sprite.sphere.collideParallelepiped( self.par )
+            return sprite.body.collideParallelepiped( self.body )
         elif not sprite.isSphere and self.isSphere :
-            return self.sphere.collideParallelepiped( sprite.par )
+            return self.body.collideParallelepiped( sprite.body )
         else :
-            return self.par.collideParallelepiped( sprite.par )
+            return self.body.collideParallelepiped( sprite.body )
     
     def keepInBox( self ) :
         if not self.isInBox() :
