@@ -7,7 +7,7 @@ from src.geometry import *
 
 glutInit()
 
-FULLSCREEN_MODE = False
+FULLSCREEN_MODE = True
 if FULLSCREEN_MODE :
     SCREEN_SIZE =  glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ), 100
 else :
