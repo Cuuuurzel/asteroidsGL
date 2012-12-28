@@ -12,8 +12,9 @@ class Game() :
 
     def __init__( self ) :
         self.asteroids = []
-        self.ship = Ship( (0,0,0) )
+        self.ship = Ship( ( 0, 0, GAME_Z ) )
         self.points = 0
+        self.onPause = True
 
     def _generateAsteroids( self ) :
         n = self.points * DIFFICULTY - len( self.asteroids ) + 1
@@ -22,10 +23,11 @@ class Game() :
             self.asteroids.append( Asteroid( self.currentAsteroidSize ) )
 
     def update( self ) :
-        self._generateAsteroids()
-        for i in self.asteroids: i.update()
-        self.ship.update()
-        self.checkCollision()
+        if not self.onPause :
+            self._generateAsteroids()
+            for i in self.asteroids: i.update()
+            self.ship.update()
+            self.checkCollision()
 
     def checkCollision( self ) :
         for b in self.ship.usedBullets :
@@ -49,10 +51,24 @@ class Game() :
     def drawAll( self ) :
         for i in self.asteroids: i.blit()
         self.ship.blit()
+        #write "scores " + self.points 
+        #if self.onPause : 
+            #write "Game Paused - Press 'p'"
 
+    def restart( self ) :
+        self.ship = Ship( ( 0, 0, GAME_Z ) )
+        self.points = 0
+        self.asteroids = []
+ 
     def start( self ) :
         self.getGLReady()
         glutMainLoop()
+
+    def pause( self ) :
+        if self.onPause :
+            self.onPause = False
+        else :
+            self.onPause = True
     
     def getGLReady( self ) :
         self.setWindow()
@@ -106,12 +122,14 @@ def display() :
     glutPostRedisplay()
 
 def keyPressed( *args  ):
-    if args[0] == '\x1b': raise SystemExit
+    if args[0] == '\x1b' : raise SystemExit
     if args[0] == 'w' or args[0] == 'W' : gameController.ship.turnUp()
     if args[0] == 's' or args[0] == 'S' : gameController.ship.turnDown()
     if args[0] == 'a' or args[0] == 'A' : gameController.ship.turnLeft()
     if args[0] == 'd' or args[0] == 'D' : gameController.ship.turnRight()
-    if args[0] == ' ': gameController.ship.shoot()
+    if args[0] == ' ' : gameController.ship.shoot()
+    if args[0] == 'p' or args[0] == 'P' : gameController.pause()
+    if args[0] == 'r' or args[0] == 'R' : gameController.restart()
 
 def mouseClick( button, state, x, y ) :
     gameController.ship.shoot()
