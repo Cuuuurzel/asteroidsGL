@@ -6,12 +6,13 @@ from src.gameConst import *
 from src.sprites import *
 from cucuMath.vectors import *
 
+
 class Ship( GLSprite3d ) :
 
     def __init__( self, pos ) :
         body = Sphere( pos, SHIP_SIZE )
-        body.quality = [ int( body.r * SPHERE_FINEST_COEFF * 3 ), 
-                         int( body.r * SPHERE_FINEST_COEFF * 3 ) ]
+        body.quality = [ int( body.r * SHIP_QUALITY ), 
+                         int( body.r * SHIP_QUALITY ) ]
         GLSprite3d.__init__( self, body, (0,0,GAME_Z), SCREEN )
         self.color = SHIP_COLOR
         self.usedBullets = []
@@ -99,8 +100,8 @@ class Asteroid( GLSprite3d ) :
         if p is None : p = self.randomPosition( r/2 )
         if d is None : d = self.randomDirection()
         body = Sphere( p, r )
-        body.quality = [ int( body.r * SPHERE_FINEST_COEFF ), 
-                         int( body.r * SPHERE_FINEST_COEFF ) ]
+        body.quality = [ int( body.r * ASTEROID_QUALITY ), 
+                         int( body.r * ASTEROID_QUALITY ) ]
         GLSprite3d.__init__( self, body, d, SCREEN )
         self.color = ASTEROID_COLOR
         self.isDead = False

@@ -6,6 +6,7 @@ from src.exceptions import *
 from src.gameSprite import *
 from src.geometry import *
 from src.gameConst import *
+import src.gameConst
 
 
 class Game() :		
@@ -29,7 +30,8 @@ class Game() :
             for i in self.asteroids: i.update()
             self.ship.update()
             self.checkCollision()
-
+        if AUTO_FIRE_MODE : self.ship.shoot()
+        
     def checkCollision( self ) :
         for b in self.ship.usedBullets :
             if not b.isInBox() :
@@ -91,16 +93,19 @@ class Game() :
         glOrtho( SCREEN.pos[0], SCREEN.pos[0]+SCREEN.w, 
                  SCREEN.pos[1], SCREEN.pos[1]+SCREEN.h,
                  NEAR_VAL, FAR_VAL )
+        #gluPerspective( 100, float(SCREEN.w)/float(SCREEN.h), NEAR_VAL, FAR_VAL )
         self.setCamera()
 
     def setGlutCallback( self ) :
 	glutDisplayFunc( display )
-        glutTimerFunc( BULLET_CHARGE_TIME, clockTick, BULLET_CHARGE_TIMER )
 	glutKeyboardFunc( keyPressed )
         glutMouseFunc( mouseClick )
         glutMotionFunc( mouseMotion )
         glutPassiveMotionFunc( mouseMotion )
-
+        glutTimerFunc( BULLET_CHARGE_TIME,
+                       clockTick,
+                       BULLET_CHARGE_TIMER_VALUE )
+    
     def setScreen( self ) :
 	#glutInit( sys.argv ) CALLED IN gameConst.py!!
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH )
@@ -155,6 +160,8 @@ def mouseMotion( x, y ) :
     gameController.ship.lastMousePos = x, y 
 
 def clockTick( value ) :
-    if value == BULLET_CHARGE_TIMER :
+    if value == BULLET_CHARGE_TIMER_VALUE :
         gameController.ship.shootCount += 1
-        glutTimerFunc( BULLET_CHARGE_TIME, clockTick, BULLET_CHARGE_TIMER )
+        glutTimerFunc( BULLET_CHARGE_TIME,
+                       clockTick,
+                       BULLET_CHARGE_TIMER_VALUE )
