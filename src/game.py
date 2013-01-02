@@ -21,6 +21,8 @@ class Game() :
     def _generateAsteroids( self ) :
         n = self.points * DIFFICULTY - len( self.asteroids ) + 1
         self.currentAsteroidSize = 4 + self.points * ASTEROIDS_GROWN_RATIO
+        src.gameConst.CURRENT_ASTEROID_QUALITY = MAX_ASTEROID_QUALITY - (
+                                                 len( self.asteroids ) * ASTEROID_QUALITY_DEC )
         for i in range( 0, int(n) ) :
             self.asteroids.append( Asteroid( self.currentAsteroidSize ) )
 
@@ -57,9 +59,6 @@ class Game() :
     def drawAll( self ) :
         for i in self.asteroids: i.blit()
         self.ship.blit()
-        #write "scores " + self.points 
-        #if self.onPause : 
-            #write "Game Paused - Press 'p'"
 
     def restart( self ) :
         self.ship = Ship( ( 0, 0, GAME_Z ) )
@@ -93,7 +92,6 @@ class Game() :
         glOrtho( SCREEN.pos[0], SCREEN.pos[0]+SCREEN.w, 
                  SCREEN.pos[1], SCREEN.pos[1]+SCREEN.h,
                  NEAR_VAL, FAR_VAL )
-        #gluPerspective( 100, float(SCREEN.w)/float(SCREEN.h), NEAR_VAL, FAR_VAL )
         self.setCamera()
 
     def setGlutCallback( self ) :
@@ -107,12 +105,10 @@ class Game() :
                        BULLET_CHARGE_TIMER_VALUE )
     
     def setScreen( self ) :
-	#glutInit( sys.argv ) CALLED IN gameConst.py!!
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH )
         if FULLSCREEN_MODE :
             glutGameModeString( str(SCREEN.w) + "x" + str(SCREEN.h) + ":" + 
                                 str(COLOR_DEPTH) + "@" + str(FPS) )
-            #glutGameModeStrin( "WIDTHxHEIGHT:COLOR_DEPHT@FPS" )
             glutEnterGameMode()
         else :
 	    glutInitWindowSize( SCREEN_SIZE[0], SCREEN_SIZE[1] )
@@ -138,7 +134,7 @@ gameController = Game()
 
 def display() :
     gameController.update()
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
     gameController.drawAll()
     glutSwapBuffers()
     glutPostRedisplay()

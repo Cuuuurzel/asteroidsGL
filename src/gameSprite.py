@@ -100,21 +100,24 @@ class Asteroid( GLSprite3d ) :
         if p is None : p = self.randomPosition( r/2 )
         if d is None : d = self.randomDirection()
         body = Sphere( p, r )
-        body.quality = [ int( body.r * ASTEROID_QUALITY ), 
-                         int( body.r * ASTEROID_QUALITY ) ]
         GLSprite3d.__init__( self, body, d, SCREEN )
         self.color = ASTEROID_COLOR
         self.isDead = False
         
     def randomPosition( self, r ) :
-        x = random.randint( SCREEN.pos[0]-2*r, SCREEN.pos[0]+SCREEN.w+2*r )
-        if x < -r or x > SCREEN_SIZE[0] :
-            y = random.randint( SCREEN.pos[1]-2*r, SCREEN.pos[1]+SCREEN.h+2*r )
+        x = SCREEN.pos[0] + random.randint( -3*r, SCREEN.w+2*r )
+        if x < -r or x > SCREEN.w :
+            y = SCREEN.pos[1] +  random.randint( -r, SCREEN.h )
         else :
-            y1 = SCREEN.pos[1] - random.randint( r, 2*r )
-            y2 = SCREEN.pos[1] + SCREEN.h + random.randint( r, 2*r )
+            y1 = SCREEN.pos[1] - random.randint( r, 3*r )
+            y2 = SCREEN.pos[1] + SCREEN.h + random.randint( 0, 2*r )
             y = random.choice( [ y1, y2 ] )
         return [ x, y, GAME_Z ]
+
+    def update( self ) :
+        self.body.quality = [ int( QUALITY_DIV * self.lv * CURRENT_ASTEROID_QUALITY ), 
+                              int( QUALITY_DIV * self.lv * CURRENT_ASTEROID_QUALITY ) ]
+        GLSprite3d.update( self )
 
     def randomDirection( self ) :
         v = Vector2d( random.randint( -DIR_RATIO, DIR_RATIO ),\
@@ -124,10 +127,10 @@ class Asteroid( GLSprite3d ) :
         return [ v[0], v[1], 0 ]
 
     def split( self ) :
-        if self.lv < 2 : return []
+        if self.lv == 1 : return []
         else :
             newa = []
-            newlevel = self.lv * LEVEL_DEC
+            newlevel = int( self.lv * LEVEL_DEC )
             dang = AST_DIR_ANG/SPLIT_N
             ang = -math.pi/2
             for i in range( 0, SPLIT_N ) :

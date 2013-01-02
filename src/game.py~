@@ -6,6 +6,7 @@ from src.exceptions import *
 from src.gameSprite import *
 from src.geometry import *
 from src.gameConst import *
+import src.gameConst
 
 
 class Game() :		
@@ -20,6 +21,8 @@ class Game() :
     def _generateAsteroids( self ) :
         n = self.points * DIFFICULTY - len( self.asteroids ) + 1
         self.currentAsteroidSize = 4 + self.points * ASTEROIDS_GROWN_RATIO
+        src.gameConst.CURRENT_ASTEROID_QUALITY = MAX_ASTEROID_QUALITY - (
+                                                 len( self.asteroids ) * ASTEROID_QUALITY_DEC )
         for i in range( 0, int(n) ) :
             self.asteroids.append( Asteroid( self.currentAsteroidSize ) )
 
@@ -29,7 +32,8 @@ class Game() :
             for i in self.asteroids: i.update()
             self.ship.update()
             self.checkCollision()
-
+        if AUTO_FIRE_MODE : self.ship.shoot()
+        
     def checkCollision( self ) :
         for b in self.ship.usedBullets :
             if not b.isInBox() :
@@ -55,9 +59,6 @@ class Game() :
     def drawAll( self ) :
         for i in self.asteroids: i.blit()
         self.ship.blit()
-        #write "scores " + self.points 
-        #if self.onPause : 
-            #write "Game Paused - Press 'p'"
 
     def restart( self ) :
         self.ship = Ship( ( 0, 0, GAME_Z ) )
@@ -95,22 +96,23 @@ class Game() :
 
     def setGlutCallback( self ) :
 	glutDisplayFunc( display )
-        glutTimerFunc( BULLET_CHARGE_TIME, clockTick, BULLET_CHARGE_TIMER )
 	glutKeyboardFunc( keyPressed )
         glutMouseFunc( mouseClick )
         glutMotionFunc( mouseMotion )
         glutPassiveMotionFunc( mouseMotion )
-
+        glutTimerFunc( BULLET_CHARGE_TIME,
+                       clockTick,
+                       BULLET_CHARGE_TIMER_VALUE )
+    
     def setScreen( self ) :
-	#glutInit( sys.argv ) CALLED IN gameConst.py!!
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH )
         if FULLSCREEN_MODE :
             glutGameModeString( str(SCREEN.w) + "x" + str(SCREEN.h) + ":" + 
                                 str(COLOR_DEPTH) + "@" + str(FPS) )
-            #glutGameModeStrin( "WIDTHxHEIGHT:COLOR_DEPHT@FPS" )
             glutEnterGameMode()
-	#glutInitWindowSize( SCREEN_SIZE[0], SCREEN_SIZE[1] )
-	#glutCreateWindow( FORM_NAME )
+        else :
+	    glutInitWindowSize( SCREEN_SIZE[0], SCREEN_SIZE[1] )
+	    glutCreateWindow( FORM_NAME )
 
     def setLights( self ) :
 	glEnable( GL_LIGHTING )
@@ -132,7 +134,7 @@ gameController = Game()
 
 def display() :
     gameController.update()
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
     gameController.drawAll()
     glutSwapBuffers()
     glutPostRedisplay()
@@ -146,6 +148,7 @@ def keyPressed( *args  ):
     if args[0] == ' ' : gameController.ship.shoot()
     if args[0] == 'p' or args[0] == 'P' : gameController.pause()
     if args[0] == 'r' or args[0] == 'R' : gameController.restart()
+    print( src.gameConst.CURRENT_ASTEROID_QUALITY )
 
 def mouseClick( button, state, x, y ) :
     gameController.ship.shoot()
@@ -154,6 +157,8 @@ def mouseMotion( x, y ) :
     gameController.ship.lastMousePos = x, y 
 
 def clockTick( value ) :
-    if value == BULLET_CHARGE_TIMER :
+    if value == BULLET_CHARGE_TIMER_VALUE :
         gameController.ship.shootCount += 1
-        glutTimerFunc( BULLET_CHARGE_TIME, clockTick, BULLET_CHARGE_TIMER )
+        glutTimerFunc( BULLET_CHARGE_TIME,
+                       clockTick,
+                       BULLET_CHARGE_TIMER_VALUE )
