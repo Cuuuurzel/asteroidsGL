@@ -44,10 +44,9 @@ class Ship( GLSprite3d ) :
         self._rotate()
     
     def _rotate( self ) :
-        ax = self.body.pos[0] + SCREEN.w/2
-        ay = self.body.pos[1] + SCREEN.h/2
-        mx = self.lastMousePos[0] - ax
-        my = self.lastMousePos[1] - ay
+        mx = self.lastMousePos[0] - SCREEN.w/2 + self.body.pos[0]
+        my = self.lastMousePos[1] - SCREEN.h/2 + self.body.pos[1]
+        print( mx, my, self.body.pos )
         self.gaze = Vector2d( mx, -my )
         self.gaze.reduce()
 
@@ -127,10 +126,10 @@ class Asteroid( GLSprite3d ) :
         return [ v[0], v[1], 0 ]
 
     def split( self ) :
-        if self.lv < 2 : return []
+        if self.lv == 1 : return []
         else :
             newa = []
-            newlevel = self.lv * LEVEL_DEC
+            newlevel = int( self.lv * LEVEL_DEC )
             dang = AST_DIR_ANG/SPLIT_N
             ang = -math.pi/2
             for i in range( 0, SPLIT_N ) :

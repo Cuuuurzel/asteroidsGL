@@ -9,7 +9,7 @@ from src.gameConst import *
 import src.gameConst
 
 
-class Game() :		
+class Game() :        
 
     def __init__( self ) :
         self.asteroids = []
@@ -81,22 +81,22 @@ class Game() :
     
     def getGLReady( self ) :
         self.setScreen()
-	glClearColor( BG_COLOR[0], BG_COLOR[1], BG_COLOR[2], 1 )
-	glShadeModel( GL_SMOOTH )
-	glEnable( GL_CULL_FACE )
-	glEnable( GL_DEPTH_TEST )
+		glClearColor( BG_COLOR[0], BG_COLOR[1], BG_COLOR[2], 1 )
+		glShadeModel( GL_SMOOTH )
+		glEnable( GL_CULL_FACE )
+		glEnable( GL_DEPTH_TEST )
         glPointSize( BULLET_SIZE )
         self.setLights()
         self.setGlutCallback()
-	glMatrixMode( GL_PROJECTION )
+    	glMatrixMode( GL_PROJECTION )
         glOrtho( SCREEN.pos[0], SCREEN.pos[0]+SCREEN.w, 
                  SCREEN.pos[1], SCREEN.pos[1]+SCREEN.h,
                  NEAR_VAL, FAR_VAL )
         self.setCamera()
 
     def setGlutCallback( self ) :
-	glutDisplayFunc( display )
-	glutKeyboardFunc( keyPressed )
+    	glutDisplayFunc( display )
+    	glutKeyboardFunc( keyPressed )
         glutMouseFunc( mouseClick )
         glutMotionFunc( mouseMotion )
         glutPassiveMotionFunc( mouseMotion )
@@ -105,30 +105,30 @@ class Game() :
                        BULLET_CHARGE_TIMER_VALUE )
     
     def setScreen( self ) :
-	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH )
+    	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH )
         if FULLSCREEN_MODE :
             glutGameModeString( str(SCREEN.w) + "x" + str(SCREEN.h) + ":" + 
                                 str(COLOR_DEPTH) + "@" + str(FPS) )
             glutEnterGameMode()
         else :
-	    glutInitWindowSize( SCREEN_SIZE[0], SCREEN_SIZE[1] )
-	    glutCreateWindow( FORM_NAME )
+		    glutInitWindowSize( SCREEN_SIZE[0], SCREEN_SIZE[1] )
+		    glutCreateWindow( FORM_NAME )
 
     def setLights( self ) :
-	glEnable( GL_LIGHTING )
-	glLightfv( GL_LIGHT0, GL_POSITION, LIGHT_0_POSITION )
-	glLightfv( GL_LIGHT0, GL_DIFFUSE, LIGHT_0_COLOR )
-	glLightf( GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.1 )
-	glLightf( GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05 )
-	glEnable( GL_LIGHT0 )
+        glEnable( GL_LIGHTING )
+        glLightfv( GL_LIGHT0, GL_POSITION, LIGHT_0_POSITION )
+        glLightfv( GL_LIGHT0, GL_DIFFUSE, LIGHT_0_COLOR )
+        glLightf( GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.1 )
+        glLightf( GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05 )
+        glEnable( GL_LIGHT0 )
 
     def setCamera( self ) :
-	glMatrixMode( GL_MODELVIEW )
-	glLoadIdentity()
-	gluLookAt( CAMERA_EYE[0], CAMERA_EYE[1], CAMERA_EYE[2], 
+        glMatrixMode( GL_MODELVIEW )
+        glLoadIdentity()
+        gluLookAt( CAMERA_EYE[0], CAMERA_EYE[1], CAMERA_EYE[2], 
                    CAMERA_CENTER[0], CAMERA_CENTER[1], CAMERA_CENTER[2], 
                    0, 1, 0 )
-	glPushMatrix()
+        glPushMatrix()
 
 gameController = Game()
 
@@ -148,7 +148,6 @@ def keyPressed( *args  ):
     if args[0] == ' ' : gameController.ship.shoot()
     if args[0] == 'p' or args[0] == 'P' : gameController.pause()
     if args[0] == 'r' or args[0] == 'R' : gameController.restart()
-    print( src.gameConst.CURRENT_ASTEROID_QUALITY )
 
 def mouseClick( button, state, x, y ) :
     gameController.ship.shoot()

@@ -44,10 +44,9 @@ class Ship( GLSprite3d ) :
         self._rotate()
     
     def _rotate( self ) :
-        ax = self.body.pos[0] + SCREEN.w/2
-        ay = self.body.pos[1] + SCREEN.h/2
-        mx = self.lastMousePos[0] - ax
-        my = self.lastMousePos[1] - ay
+        mx = self.lastMousePos[0] - SCREEN.w/2 + self.body.pos[0]
+        my = self.lastMousePos[1] - SCREEN.h/2 + self.body.pos[1]
+        print( mx, my, self.body.pos )
         self.gaze = Vector2d( mx, -my )
         self.gaze.reduce()
 
